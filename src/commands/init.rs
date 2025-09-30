@@ -1,5 +1,5 @@
 use crate::config::Config;
-use std::{collections::HashMap, env::current_dir};
+use std::env::current_dir;
 
 pub fn init(force: &bool) {
     let current_dir = current_dir().unwrap();
@@ -14,19 +14,16 @@ pub fn init(force: &bool) {
         std::process::exit(1);
     }
 
-    let config = Config {
-        name: current_dir
+    let config = Config::new(
+        current_dir
             .file_name()
             .unwrap()
             .to_string_lossy()
             .to_string(),
-        author: String::from("dotfm"),
-        files: HashMap::new(),
-    };
+        String::from("dotfm"),
+    );
 
-    let config_toml = toml::to_string(&config).unwrap();
-
-    match std::fs::write(current_dir.join(".dotfm"), config_toml) {
+    match config.save(&current_dir.join(".dotfm")) {
         Ok(_) => println!(
             "Initialized empty dotfm repository in {}",
             current_dir.display()
