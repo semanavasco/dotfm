@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::core::config::Config;
 use std::{env::current_dir, os::unix::fs};
 
 pub fn load(force: &bool) -> Result<(), String> {

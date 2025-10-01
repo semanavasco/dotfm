@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::core::config::Config;
 use std::env::current_dir;
 
 pub fn init(force: &bool) -> Result<(), String> {

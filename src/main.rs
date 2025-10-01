@@ -1,9 +1,8 @@
-mod cli;
 mod commands;
-mod config;
+mod core;
 
-use crate::cli::{Cli, Commands};
 use crate::commands::{add, init, load, remove};
+use crate::core::cli::{Cli, Commands};
 use clap::Parser;
 
 fn main() {

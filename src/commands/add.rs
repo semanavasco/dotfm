@@ -1,4 +1,4 @@
-use crate::config::Config;
+use crate::core::config::Config;
 use std::{env::current_dir, os::unix::fs, path::PathBuf};
 
 pub fn add(path: &PathBuf, name: &Option<String>) -> Result<(), String> {
