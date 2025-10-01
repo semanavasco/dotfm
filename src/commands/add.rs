@@ -1,13 +1,12 @@
 use crate::config::Config;
 use std::{env::current_dir, os::unix::fs, path::PathBuf};
 
-pub fn add(path: &PathBuf, name: &Option<String>) {
+pub fn add(path: &PathBuf, name: &Option<String>) -> Result<(), String> {
     let config_file = current_dir().unwrap().join(".dotfm");
     let mut config = Config::load(&config_file).unwrap();
 
     if !path.exists() {
-        eprintln!("Error: Specified path does not exist.");
-        std::process::exit(1);
+        return Err(String::from("Specified path does not exist."));
     }
 
     let file_name = match name {
@@ -16,8 +15,7 @@ pub fn add(path: &PathBuf, name: &Option<String>) {
     };
 
     if config.files.contains_key(&file_name) {
-        eprintln!("Error: A file with this name is already managed.");
-        std::process::exit(1);
+        return Err(String::from("A file with this name is already managed."));
     }
 
     config.files.insert(file_name.clone(), path.clone());
@@ -26,10 +24,10 @@ pub fn add(path: &PathBuf, name: &Option<String>) {
     fs::symlink(config_file.parent().unwrap().join(&file_name), path).unwrap();
 
     match config.save(&config_file) {
-        Ok(_) => println!("Added {} to {} repository.", path.display(), config.name),
-        Err(_) => {
-            eprintln!("Error: Couldn't update .dotfm file.");
-            std::process::exit(1);
+        Ok(_) => {
+            println!("Added {} to {} repository.", path.display(), config.name);
+            Ok(())
         }
+        Err(_) => Err(String::from("Couldn't update .dotfm file.")),
     }
 }

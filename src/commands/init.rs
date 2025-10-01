@@ -1,17 +1,19 @@
 use crate::config::Config;
 use std::env::current_dir;
 
-pub fn init(force: &bool) {
+pub fn init(force: &bool) -> Result<(), String> {
     let current_dir = current_dir().unwrap();
 
     if current_dir.read_dir().unwrap().next().is_some() && !force {
-        eprintln!("Error: Directory is not empty. Use --force to initialize anyway.");
-        std::process::exit(1);
+        return Err(String::from(
+            "Directory is not empty. Use --force to initialize anyway.",
+        ));
     }
 
     if current_dir.join(".dotfm").exists() {
-        eprintln!("Error: Already in a dotfm repository.");
-        std::process::exit(1);
+        return Err(String::from(
+            "A dotfm repository already exists in this directory.",
+        ));
     }
 
     let config = Config::new(
@@ -24,15 +26,15 @@ pub fn init(force: &bool) {
     );
 
     match config.save(&current_dir.join(".dotfm")) {
-        Ok(_) => println!(
-            "Initialized empty dotfm repository in {}",
-            current_dir.display()
-        ),
-        Err(_) => {
-            eprintln!(
-                "Error: Couldn't write .dotfm file. Check current working directory's permissions."
+        Ok(_) => {
+            println!(
+                "Initialized empty dotfm repository in {}",
+                current_dir.display()
             );
-            std::process::exit(1);
+            Ok(())
         }
+        Err(_) => Err(String::from(
+            "Couldn't write .dotfm file. Check current working directory's permissions.",
+        )),
     }
 }
