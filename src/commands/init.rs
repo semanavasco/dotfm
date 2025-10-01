@@ -1,35 +1,21 @@
-use crate::core::config::Config;
-use std::env::current_dir;
+use crate::core::repo::Repo;
 
 pub fn init(force: &bool) -> Result<(), String> {
-    let current_dir = current_dir().unwrap();
+    let current_dir = match std::env::current_dir() {
+        Ok(dir) => dir,
+        Err(_) => return Err(String::from("Failed to get current working directory.")),
+    };
 
-    if current_dir.read_dir().unwrap().next().is_some() && !force {
-        return Err(String::from(
-            "Directory is not empty. Use --force to initialize anyway.",
-        ));
-    }
+    let repo = match Repo::new_at(current_dir.clone(), force) {
+        Ok(r) => r,
+        Err(e) => return Err(e),
+    };
 
-    if current_dir.join(".dotfm").exists() {
-        return Err(String::from(
-            "A dotfm repository already exists in this directory.",
-        ));
-    }
-
-    let config = Config::new(
-        current_dir
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .to_string(),
-        String::from("dotfm"),
-    );
-
-    match config.save(&current_dir.join(".dotfm")) {
+    match repo.config.save(repo.config_path()) {
         Ok(_) => {
             println!(
-                "Initialized empty dotfm repository in {}",
-                current_dir.display()
+                "Initialized empty dotfm repository at {}",
+                repo.root().display()
             );
             Ok(())
         }

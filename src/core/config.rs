@@ -26,12 +26,18 @@ impl Config {
             ));
         }
 
-        let content = std::fs::read_to_string(file_path).unwrap();
+        let content = match std::fs::read_to_string(file_path) {
+            Ok(c) => c,
+            Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
+        };
         toml::from_str(&content).map_err(|e| Error::new(ErrorKind::InvalidData, e))
     }
 
     pub fn save(&self, file_path: &PathBuf) -> Result<(), Error> {
-        let content = toml::to_string(self).unwrap();
+        let content = match toml::to_string(self) {
+            Ok(c) => c,
+            Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
+        };
         std::fs::write(file_path, content)
     }
 }
