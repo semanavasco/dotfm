@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-
 use crate::core::config::Config;
+use crate::core::error::Error;
+use std::path::PathBuf;
 
 pub struct Repo {
     root: PathBuf,
@@ -9,20 +9,22 @@ pub struct Repo {
 }
 
 impl Repo {
-    pub fn new_at(path: PathBuf, force: &bool) -> Result<Self, String> {
+    pub fn new_at(path: PathBuf, force: &bool) -> Result<Self, Error> {
         let config_path = path.join(".dotfm");
         if config_path.exists() {
-            return Err(String::from("Already in a dotfm repository."));
+            return Err(Error::Msg("Already in a dotfm repository.".to_string()));
         }
 
         let is_empty = match path.read_dir() {
             Ok(mut entries) => entries.next().is_none(),
-            Err(_) => return Err(String::from("Failed to read current directory.")),
+            Err(_) => {
+                return Err(Error::Msg("Failed to read current directory.".to_string()));
+            }
         };
 
         if !is_empty && !force {
-            return Err(String::from(
-                "Directory is not empty. Use --force to initialize anyway.",
+            return Err(Error::Msg(
+                "Directory is not empty. Use --force to initialize anyway.".to_string(),
             ));
         }
 
@@ -41,15 +43,15 @@ impl Repo {
         })
     }
 
-    pub fn load_at(path: PathBuf) -> Result<Self, String> {
+    pub fn load_at(path: PathBuf) -> Result<Self, Error> {
         let config_path = path.join(".dotfm");
         if !config_path.exists() {
-            return Err(String::from("Not in a dotfm repository."));
+            return Err(Error::Msg("Not in a dotfm repository.".to_string()));
         }
 
         let config = match Config::load(&config_path) {
             Ok(cfg) => cfg,
-            Err(e) => return Err(format!("Failed to load config: {}", e)),
+            Err(e) => return Err(Error::Msg(format!("Failed to load config: {:?}", e))),
         };
 
         Ok(Self {

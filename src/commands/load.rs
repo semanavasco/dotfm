@@ -1,56 +1,38 @@
+use crate::core::error::Error;
 use crate::core::repo::Repo;
 use std::os::unix::fs;
 
-pub fn load(force: &bool) -> Result<(), String> {
-    let current_dir = match std::env::current_dir() {
-        Ok(dir) => dir,
-        Err(_) => return Err(String::from("Failed to get current working directory.")),
-    };
-
-    let repo = match Repo::load_at(current_dir) {
-        Ok(r) => r,
-        Err(e) => return Err(e),
-    };
+pub fn load(force: &bool) -> Result<(), Error> {
+    let current_dir = std::env::current_dir()?;
+    let repo = Repo::load_at(current_dir)?;
 
     for (name, original_path) in &repo.config.files {
         if original_path.exists() {
             if *force {
-                match std::fs::remove_file(original_path) {
-                    Ok(_) => {
-                        println!("Removed existing file: {}", original_path.display());
-                    }
-                    Err(e) => {
-                        eprintln!(
-                            "Error: Failed to remove existing file {}: {}",
-                            original_path.display(),
-                            e
-                        );
-                        continue;
-                    }
-                }
+                std::fs::remove_file(original_path).map_err(|e| {
+                    Error::Msg(format!(
+                        "Failed to remove existing file {}: {}",
+                        original_path.display(),
+                        e
+                    ))
+                })?;
+                println!("Removed existing file: {}", original_path.display());
             } else {
-                eprintln!(
-                    "Error: {} already exists. Use --force to overwrite.",
+                return Err(Error::Msg(format!(
+                    "{} already exists. Use --force to overwrite.",
                     original_path.display()
-                );
-                continue;
+                )));
             }
         }
 
-        match fs::symlink(repo.root().join(name), original_path) {
-            Ok(_) => {
-                println!("Loaded {} to {}", name, original_path.display());
-            }
-            Err(e) => {
-                eprintln!(
-                    "Failed to create symlink for {}: {}",
-                    original_path.display(),
-                    e
-                );
-                continue;
-            }
-        };
+        fs::symlink(repo.root().join(name), original_path).map_err(|e| {
+            Error::Msg(format!(
+                "Failed to create symlink for {}: {}",
+                original_path.display(),
+                e
+            ))
+        })?;
+        println!("Loaded {} to {}", name, original_path.display());
     }
-
     Ok(())
 }

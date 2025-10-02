@@ -1,5 +1,5 @@
+use crate::core::error::Error;
 use std::collections::HashMap;
-use std::io::{Error, ErrorKind};
 use std::path::PathBuf;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
@@ -20,24 +20,16 @@ impl Config {
 
     pub fn load(file_path: &PathBuf) -> Result<Self, Error> {
         if !file_path.exists() {
-            return Err(Error::new(
-                ErrorKind::NotFound,
-                "Configuration file not found",
-            ));
+            return Err(Error::Msg("Configuration file not found".to_string()));
         }
-
-        let content = match std::fs::read_to_string(file_path) {
-            Ok(c) => c,
-            Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
-        };
-        toml::from_str(&content).map_err(|e| Error::new(ErrorKind::InvalidData, e))
+        let content = std::fs::read_to_string(file_path)?;
+        let config = toml::from_str(&content)?;
+        Ok(config)
     }
 
     pub fn save(&self, file_path: &PathBuf) -> Result<(), Error> {
-        let content = match toml::to_string(self) {
-            Ok(c) => c,
-            Err(e) => return Err(Error::new(ErrorKind::InvalidData, e)),
-        };
-        std::fs::write(file_path, content)
+        let content = toml::to_string(self)?;
+        std::fs::write(file_path, content)?;
+        Ok(())
     }
 }
