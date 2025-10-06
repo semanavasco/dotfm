@@ -1,5 +1,4 @@
 use clap::{Parser, Subcommand, ValueHint};
-use std::path::PathBuf;
 
 #[derive(Parser, Debug)]
 #[command(version, about = "A dotfiles manager", long_about = None, author = "svasco")]
@@ -19,9 +18,9 @@ pub enum Commands {
 
     /// Add a new file or directory to be managed
     Add {
-        /// The file or directory to add
+        /// The file or directory to add.
         #[arg(value_name = "PATH", value_hint = ValueHint::FilePath)]
-        path: PathBuf,
+        path: String,
 
         /// The name to use for the managed file or directory
         #[arg(short, long)]

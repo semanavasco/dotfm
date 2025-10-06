@@ -1,5 +1,6 @@
 use crate::core::error::Error;
 use crate::core::repo::Repo;
+use crate::utils::paths::expand_path;
 
 pub fn remove(name: &String) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
@@ -10,7 +11,7 @@ pub fn remove(name: &String) -> Result<(), Error> {
     }
 
     let original_path = match repo.config.files.get(name) {
-        Some(p) => p.clone(),
+        Some(p) => expand_path(p),
         None => {
             return Err(Error::Msg(
                 "No managed file with this name in the repository.".to_string(),
@@ -26,7 +27,6 @@ pub fn remove(name: &String) -> Result<(), Error> {
                 e
             ))
         })?;
-        println!("Removed managed file: {}", original_path.display());
     }
 
     std::fs::rename(repo.root().join(name), &original_path).map_err(|e| {
@@ -36,10 +36,6 @@ pub fn remove(name: &String) -> Result<(), Error> {
             e
         ))
     })?;
-    println!(
-        "Restored original file from repository to {}",
-        original_path.display()
-    );
 
     repo.config.files.remove(name);
     repo.config.save(repo.config_path())?;

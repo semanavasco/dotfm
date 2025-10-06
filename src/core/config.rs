@@ -6,7 +6,7 @@ use std::path::PathBuf;
 pub struct Config {
     pub name: String,
     pub author: String,
-    pub files: HashMap<String, PathBuf>,
+    pub files: HashMap<String, String>,
 }
 
 impl Config {
