@@ -1,0 +1,40 @@
+use crate::core::error::Error;
+use crate::core::repo::Repo;
+use crate::utils::paths::expand_path;
+use std::fs;
+
+pub fn restore(force: &bool) -> Result<(), Error> {
+    let current_dir = std::env::current_dir()?;
+    let repo = Repo::load_at(current_dir)?;
+
+    for (name, path_str) in &repo.config.files {
+        let path = expand_path(path_str);
+        if path.exists() {
+            if *force || path.is_symlink() {
+                std::fs::remove_file(&path).map_err(|e| {
+                    Error::Msg(format!(
+                        "Failed to remove existing file or directory at {}: {}",
+                        path.display(),
+                        e
+                    ))
+                })?;
+            } else {
+                return Err(Error::Msg(format!(
+                    "{} already exists. Use --force to overwrite.",
+                    path.display()
+                )));
+            }
+        }
+
+        fs::copy(repo.root().join(name), &path).map_err(|e| {
+            Error::Msg(format!(
+                "Failed to copy file or directory at {} to {}: {}",
+                path.display(),
+                repo.root().join(name).display(),
+                e
+            ))
+        })?;
+        println!("Restored {} to {}", name, path.display());
+    }
+    Ok(())
+}

@@ -2,7 +2,7 @@ mod commands;
 mod core;
 mod utils;
 
-use crate::commands::{add, init, load, remove};
+use crate::commands::{add, init, load, remove, restore};
 use crate::core::cli::{Cli, Commands};
 use clap::Parser;
 
@@ -14,6 +14,7 @@ fn main() {
         Commands::Add { path, name } => add::add(path, name),
         Commands::Remove { name } => remove::remove(name),
         Commands::Load { force } => load::load(force),
+        Commands::Restore { force } => restore::restore(force),
     };
 
     if let Err(e) = result {

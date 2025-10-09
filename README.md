@@ -64,6 +64,20 @@ Use `--force` to overwrite existing files:
 dotfm load --force
 ```
 
+### Restore dotfiles
+
+```bash
+dotfm restore
+```
+
+Use `--force` to overwrite existing files:
+
+```bash
+dotfm restore --force
+```
+
+Restore is similar to load but it copies the files to their positions instead of creating symlinks.
+
 ## Configuration
 
 The configuration is stored in `.dotfm` in your repository root. Example:

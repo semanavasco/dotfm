@@ -40,4 +40,11 @@ pub enum Commands {
         #[arg(short, long, default_value_t = false)]
         force: bool,
     },
+
+    /// Restore all managed files to their original locations
+    Restore {
+        /// Force overwrite of existing files
+        #[arg(short, long, default_value_t = false)]
+        force: bool,
+    },
 }
