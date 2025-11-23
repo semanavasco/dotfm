@@ -1,6 +1,6 @@
 use crate::core::error::Error;
+use crate::core::paths::expand_path;
 use crate::core::repo::Repo;
-use crate::utils::paths::expand_path;
 use std::os::unix::fs;
 
 pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {

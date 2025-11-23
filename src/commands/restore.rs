@@ -1,6 +1,6 @@
 use crate::core::error::Error;
+use crate::core::paths::expand_path;
 use crate::core::repo::Repo;
-use crate::utils::paths::expand_path;
 use std::fs;
 
 pub fn restore(force: &bool) -> Result<(), Error> {
