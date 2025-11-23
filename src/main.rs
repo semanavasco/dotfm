@@ -1,19 +1,16 @@
-mod commands;
-mod core;
-
-use crate::commands::base::{add, init, load, remove, restore};
-use crate::core::cli::{Cli, Commands};
 use clap::Parser;
+use dotfm::commands;
+use dotfm::core::cli::{Cli, Commands};
 
 fn main() {
     let cli = Cli::parse();
 
     let result = match &cli.commands {
-        Commands::Init { force } => init::init(force),
-        Commands::Add { path, name } => add::add(path, name),
-        Commands::Remove { name } => remove::remove(name),
-        Commands::Load { force } => load::load(force),
-        Commands::Restore { force } => restore::restore(force),
+        Commands::Init { force } => commands::base::init(force),
+        Commands::Add { path, name } => commands::base::add(path, name),
+        Commands::Remove { name } => commands::base::remove(name),
+        Commands::Load { force } => commands::base::load(force),
+        Commands::Restore { force } => commands::base::restore(force),
     };
 
     if let Err(e) = result {
