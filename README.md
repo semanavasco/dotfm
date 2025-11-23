@@ -80,7 +80,7 @@ Restore is similar to load but it copies the files to their positions instead of
 
 ## Configuration
 
-The configuration is stored in `.dotfm` in your repository root. Example:
+The configuration is stored in `dotfm.toml` in your repository root. Example:
 
 ```toml
 name = "dotfiles"

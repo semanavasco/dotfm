@@ -10,7 +10,7 @@ pub struct Repo {
 
 impl Repo {
     pub fn new_at(path: PathBuf, force: &bool) -> Result<Self, Error> {
-        let config_path = path.join(".dotfm");
+        let config_path = path.join("dotfm.toml");
         if config_path.exists() {
             return Err(Error::Msg("Already in a dotfm repository.".to_string()));
         }
@@ -44,7 +44,7 @@ impl Repo {
     }
 
     pub fn load_at(path: PathBuf) -> Result<Self, Error> {
-        let config_path = path.join(".dotfm");
+        let config_path = path.join("dotfm.toml");
         if !config_path.exists() {
             return Err(Error::Msg("Not in a dotfm repository.".to_string()));
         }
