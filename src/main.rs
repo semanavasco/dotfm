@@ -1,7 +1,7 @@
 mod commands;
 mod core;
 
-use crate::commands::{add, init, load, remove, restore};
+use crate::commands::base::{add, init, load, remove, restore};
 use crate::core::cli::{Cli, Commands};
 use clap::Parser;
 
