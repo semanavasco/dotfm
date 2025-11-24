@@ -97,3 +97,4 @@ vimrc = "~/.vimrc"
   - Define required and optional packages
   - Specify package manager commands (e.g., `apt install`, `brew install`)
   - Automatically install packages when loading dotfiles on a new system
+- **Remote Repository Loading**: Load your dotfiles from a remote repository to avoid symlink hell or config duplication
