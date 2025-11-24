@@ -13,16 +13,18 @@ pub fn expand_path(input: &str) -> PathBuf {
 }
 
 fn expand_tilde(path: &str) -> String {
-    if let Some(stripped) = path.strip_prefix("~/") {
-        if let Some(home) = home_dir() {
-            return format!("{}/{}", home.display(), stripped);
-        }
+    if let Some(stripped) = path.strip_prefix("~/")
+        && let Some(home) = home_dir()
+    {
+        return format!("{}/{}", home.display(), stripped);
     }
-    if path == "~" {
-        if let Some(home) = home_dir() {
-            return home.display().to_string();
-        }
+
+    if path == "~"
+        && let Some(home) = home_dir()
+    {
+        return home.display().to_string();
     }
+
     path.to_string()
 }
 
