@@ -1,5 +1,6 @@
+use std::path::PathBuf;
+
 use crate::core::error::Error;
-use crate::core::paths::expand_path;
 use crate::core::repo::Repo;
 
 pub fn remove(name: &String) -> Result<(), Error> {
@@ -11,7 +12,7 @@ pub fn remove(name: &String) -> Result<(), Error> {
     }
 
     let original_path = match repo.config.files.get(name) {
-        Some(p) => expand_path(p),
+        Some(path) => PathBuf::from(shellexpand::full(path)?.to_string()),
         None => {
             return Err(Error::Msg(
                 "No managed file with this name in the repository.".to_string(),

@@ -1,13 +1,14 @@
 use crate::core::error::Error;
-use crate::core::paths::expand_path;
 use crate::core::repo::Repo;
 use std::os::unix::fs;
+use std::path::PathBuf;
 
 pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
-    let file_path = expand_path(path);
+    let file_path = PathBuf::from(shellexpand::full(path)?.to_string());
+
     if !file_path.exists() {
         return Err(Error::Msg("Specified path does not exist.".to_string()));
     }
@@ -34,6 +35,7 @@ pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {
 
     std::fs::rename(&file_path, repo.root().join(&file_name))
         .map_err(|e| Error::Msg(format!("Failed to move file {} to repository: {}", path, e)))?;
+
     fs::symlink(repo.root().join(&file_name), &file_path).map_err(|e| {
         Error::Msg(format!(
             "Failed to create symlink from {} to {}: {}",

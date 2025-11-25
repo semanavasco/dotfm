@@ -1,3 +1,4 @@
+use std::env::VarError;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -10,6 +11,9 @@ pub enum Error {
 
     #[error("TOML serialization error: {0}")]
     TomlSer(#[from] toml::ser::Error),
+
+    #[error("Environment error: {0}")]
+    Env(#[from] shellexpand::LookupError<VarError>),
 
     #[error("{0}")]
     Msg(String),
