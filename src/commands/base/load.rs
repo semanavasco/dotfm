@@ -10,7 +10,7 @@ pub fn load(force: &bool) -> Result<(), Error> {
     for (name, path_str) in &repo.config.files {
         let path = PathBuf::from(shellexpand::full(path_str)?.to_string());
 
-        if path.exists() && !*force {
+        if path.exists() {
             if !*force {
                 return Err(Error::Msg(format!(
                     "{} already exists. Use --force to overwrite.",
