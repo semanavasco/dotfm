@@ -31,9 +31,9 @@ impl Repo {
         let config = Config::new(
             match path.file_name() {
                 Some(name) => name.to_string_lossy().to_string(),
-                None => String::from("dotfm-repo"),
+                None => "dotfm-repo".to_string(),
             },
-            String::from("dotfm"),
+            "dotfm".to_string(),
         );
 
         Ok(Self {

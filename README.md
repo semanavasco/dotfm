@@ -8,6 +8,8 @@ A simple dotfiles manager written in Rust.
 - **Add Files**: Track dotfiles by moving them to the repository and creating symlinks
 - **Remove Files**: Stop managing files and restore them to their original locations
 - **Load Files**: Deploy your dotfiles by creating symlinks from the repository to their target locations
+- **Restore Files**: Copy dotfiles to their target locations (without symlinks)
+- **Package Management**: Declare system packages with install commands and dependency tracking
 - **TOML Configuration**: Configuration file for easy editing and version control
 
 ## Installation
@@ -89,12 +91,76 @@ author = "dotfm"
 [files]
 bashrc = "~/.bashrc"
 vimrc = "~/.vimrc"
+
+[packages.pacman]
+install_cmd = "sudo pacman -S"
+dependencies = ["neovim", "git", "zsh"]
+optional = ["fastfetch"]
+
+[packages.apt]
+install_cmd = "sudo apt install"
+dependencies = ["build-essential"]
+optional = ["neofetch"]
+```
+
+## Package Management
+
+dotfm can track system packages alongside your dotfiles, making it easy to set up a new system.
+
+### Add a package manager
+
+```bash
+dotfm package manager add pacman "sudo pacman -S"
+dotfm package manager add apt "sudo apt install"
+```
+
+### Remove a package manager
+
+```bash
+dotfm package manager remove apt
+```
+
+### Add packages
+
+Add a required dependency:
+
+```bash
+dotfm package add neovim pacman
+```
+
+Add an optional package:
+
+```bash
+dotfm package add fastfetch pacman --optional
+```
+
+### Remove packages
+
+```bash
+dotfm package remove neovim pacman
+dotfm package remove fastfetch pacman --optional
+```
+
+### Install packages
+
+Install all required packages from all managers:
+
+```bash
+dotfm package install
+```
+
+Install from specific package managers:
+
+```bash
+dotfm package install pacman apt
+```
+
+Include optional packages:
+
+```bash
+dotfm package install --optional
 ```
 
 ## Planned Features
 
-- **Package Management**: Declare system packages in your dotfm configuration with install commands and dependency tracking
-  - Define required and optional packages
-  - Specify package manager commands (e.g., `apt install`, `brew install`)
-  - Automatically install packages when loading dotfiles on a new system
 - **Remote Repository Loading**: Load your dotfiles from a remote repository to avoid symlink hell or config duplication

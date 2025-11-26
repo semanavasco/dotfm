@@ -7,6 +7,7 @@ pub struct Config {
     pub name: String,
     pub author: String,
     pub files: HashMap<String, String>,
+    pub packages: HashMap<String, PackageManager>,
 }
 
 impl Config {
@@ -15,6 +16,7 @@ impl Config {
             name,
             author,
             files: HashMap::new(),
+            packages: HashMap::new(),
         }
     }
 
@@ -31,5 +33,35 @@ impl Config {
         let content = toml::to_string(self)?;
         std::fs::write(file_path, content)?;
         Ok(())
+    }
+}
+
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct PackageManager {
+    pub install_cmd: String,
+    pub dependencies: Vec<String>,
+    pub optional: Vec<String>,
+}
+
+impl PackageManager {
+    pub fn new(install_cmd: String) -> Self {
+        PackageManager {
+            install_cmd,
+            dependencies: Vec::new(),
+            optional: Vec::new(),
+        }
+    }
+
+    pub fn install_cmd(&self, optional: bool) -> String {
+        if !optional {
+            format!("{} {}", self.install_cmd, self.dependencies.join(" "))
+        } else {
+            format!(
+                "{} {} {}",
+                self.install_cmd,
+                self.dependencies.join(" "),
+                self.optional.join(" ")
+            )
+        }
     }
 }

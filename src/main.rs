@@ -1,6 +1,6 @@
 use clap::Parser;
 use dotfm::commands;
-use dotfm::core::cli::{Cli, Commands};
+use dotfm::core::cli::{Cli, Commands, Package, PackageManager};
 
 fn main() {
     let cli = Cli::parse();
@@ -11,6 +11,29 @@ fn main() {
         Commands::Remove { name } => commands::base::remove(name),
         Commands::Load { force } => commands::base::load(force),
         Commands::Restore { force } => commands::base::restore(force),
+
+        Commands::Package { commands } => match &commands {
+            Package::Add {
+                name,
+                package_manager,
+                optional,
+            } => commands::package::add(name, package_manager, optional),
+            Package::Remove {
+                name,
+                package_manager,
+                optional,
+            } => commands::package::remove(name, package_manager, optional),
+            Package::Install { managers, optional } => {
+                commands::package::install(managers, optional)
+            }
+
+            Package::Manager { commands } => match &commands {
+                PackageManager::Add { name, install_cmd } => {
+                    commands::package::add_manager(name, install_cmd)
+                }
+                PackageManager::Remove { name } => commands::package::remove_manager(name),
+            },
+        },
     };
 
     if let Err(e) = result {
