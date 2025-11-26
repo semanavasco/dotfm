@@ -30,8 +30,8 @@ pub fn restore(force: bool) -> Result<(), Error> {
         fs::copy(repo.root().join(name), &path).map_err(|e| {
             Error::Msg(format!(
                 "Failed to copy file or directory at {} to {}: {}",
-                path.display(),
                 repo.root().join(name).display(),
+                path.display(),
                 e
             ))
         })?;
