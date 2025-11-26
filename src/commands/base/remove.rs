@@ -7,18 +7,11 @@ pub fn remove(name: &str) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
-    if !repo.config.files.contains_key(name) {
+    let Some(path_str) = repo.config.files.get(name) else {
         return Err(Error::Msg("No managed file with this name.".to_string()));
-    }
-
-    let original_path = match repo.config.files.get(name) {
-        Some(path) => PathBuf::from(shellexpand::full(path)?.to_string()),
-        None => {
-            return Err(Error::Msg(
-                "No managed file with this name in the repository.".to_string(),
-            ));
-        }
     };
+
+    let original_path = PathBuf::from(shellexpand::full(path_str)?.to_string());
 
     if original_path.exists() {
         std::fs::remove_file(&original_path).map_err(|e| {
