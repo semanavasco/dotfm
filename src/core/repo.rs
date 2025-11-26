@@ -49,10 +49,7 @@ impl Repo {
             return Err(Error::Msg("Not in a dotfm repository.".to_string()));
         }
 
-        let config = match Config::load(&config_path) {
-            Ok(cfg) => cfg,
-            Err(e) => return Err(Error::Msg(format!("Failed to load config: {:?}", e))),
-        };
+        let config = Config::load(&config_path)?;
 
         Ok(Self {
             root: path,
