@@ -1,6 +1,6 @@
 use crate::core::{error::Error, repo::Repo};
 
-pub fn add(name: &str, package_manager: &str, optional: &bool) -> Result<(), Error> {
+pub fn add(name: &str, package_manager: &str, optional: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
@@ -21,7 +21,7 @@ pub fn add(name: &str, package_manager: &str, optional: &bool) -> Result<(), Err
         ));
     }
 
-    if *optional {
+    if optional {
         package_manager_ref.optional.push(name.to_string());
     } else {
         package_manager_ref.dependencies.push(name.to_string());
@@ -30,7 +30,7 @@ pub fn add(name: &str, package_manager: &str, optional: &bool) -> Result<(), Err
     repo.config.save(repo.config_path())?;
     println!(
         "Package {name} was added to {package_manager}'s{}dependencies.",
-        if *optional { " optional " } else { " " }
+        if optional { " optional " } else { " " }
     );
     Ok(())
 }

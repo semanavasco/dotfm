@@ -1,6 +1,6 @@
 use crate::core::{config::PackageManager, error::Error, repo::Repo};
 
-pub fn install(managers: &Option<Vec<String>>, optional: &bool) -> Result<(), Error> {
+pub fn install(managers: &Option<Vec<String>>, optional: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let repo = Repo::load_at(current_dir)?;
 
@@ -11,14 +11,14 @@ pub fn install(managers: &Option<Vec<String>>, optional: &bool) -> Result<(), Er
             .iter()
             .filter(|p| {
                 managers.contains(p.0)
-                    && (!p.1.dependencies.is_empty() || (*optional && !p.1.optional.is_empty()))
+                    && (!p.1.dependencies.is_empty() || (optional && !p.1.optional.is_empty()))
             })
             .collect(),
         None => repo
             .config
             .packages
             .iter()
-            .filter(|p| !p.1.dependencies.is_empty() || (*optional && !p.1.optional.is_empty()))
+            .filter(|p| !p.1.dependencies.is_empty() || (optional && !p.1.optional.is_empty()))
             .collect(),
     };
 
@@ -32,7 +32,7 @@ pub fn install(managers: &Option<Vec<String>>, optional: &bool) -> Result<(), Er
         println!("Installing packages for {}:", name);
         let status = std::process::Command::new("sh")
             .arg("-c")
-            .arg(pm.install_cmd(*optional))
+            .arg(pm.install_cmd(optional))
             .status()
             .map_err(|e| Error::Msg(format!("Failed to run install command: {}", e)))?;
 

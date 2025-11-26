@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use crate::core::error::Error;
 use crate::core::repo::Repo;
 
-pub fn remove(name: &String) -> Result<(), Error> {
+pub fn remove(name: &str) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 

@@ -1,6 +1,6 @@
 use crate::core::error::Error;
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::Path;
 
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Config {
@@ -20,7 +20,7 @@ impl Config {
         }
     }
 
-    pub fn load(file_path: &PathBuf) -> Result<Self, Error> {
+    pub fn load(file_path: &Path) -> Result<Self, Error> {
         if !file_path.exists() {
             return Err(Error::Msg("Configuration file not found".to_string()));
         }
@@ -29,7 +29,7 @@ impl Config {
         Ok(config)
     }
 
-    pub fn save(&self, file_path: &PathBuf) -> Result<(), Error> {
+    pub fn save(&self, file_path: &Path) -> Result<(), Error> {
         let content = toml::to_string(self)?;
         std::fs::write(file_path, content)?;
         Ok(())

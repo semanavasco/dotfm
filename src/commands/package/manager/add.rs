@@ -10,9 +10,10 @@ pub fn add(name: &str, install_cmd: &str) -> Result<(), Error> {
         ));
     }
 
-    repo.config
-        .packages
-        .insert(name.to_string(), PackageManager::new(install_cmd.to_owned()));
+    repo.config.packages.insert(
+        name.to_string(),
+        PackageManager::new(install_cmd.to_owned()),
+    );
 
     repo.config.save(repo.config_path())?;
     println!(

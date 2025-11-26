@@ -1,6 +1,6 @@
 use crate::core::{error::Error, repo::Repo};
 
-pub fn remove(name: &str, package_manager: &str, optional: &bool) -> Result<(), Error> {
+pub fn remove(name: &str, package_manager: &str, optional: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
@@ -10,7 +10,7 @@ pub fn remove(name: &str, package_manager: &str, optional: &bool) -> Result<(), 
         )));
     };
 
-    if *optional {
+    if optional {
         if !package_manager_ref.optional.contains(&name.to_string()) {
             return Err(Error::Msg(
                 "A package with this name isn't managed as an optional dependency.".to_string(),
@@ -31,7 +31,7 @@ pub fn remove(name: &str, package_manager: &str, optional: &bool) -> Result<(), 
     repo.config.save(repo.config_path())?;
     println!(
         "Package {name} was removed from {package_manager}'s{}dependencies.",
-        if *optional { " optional " } else { " " }
+        if optional { " optional " } else { " " }
     );
     Ok(())
 }

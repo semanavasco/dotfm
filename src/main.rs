@@ -6,25 +6,25 @@ fn main() {
     let cli = Cli::parse();
 
     let result = match &cli.commands {
-        Commands::Init { force } => commands::base::init(force),
-        Commands::Add { path, name } => commands::base::add(path, name),
+        Commands::Init { force } => commands::base::init(*force),
+        Commands::Add { path, name } => commands::base::add(path, name.as_deref()),
         Commands::Remove { name } => commands::base::remove(name),
-        Commands::Load { force } => commands::base::load(force),
-        Commands::Restore { force } => commands::base::restore(force),
+        Commands::Load { force } => commands::base::load(*force),
+        Commands::Restore { force } => commands::base::restore(*force),
 
         Commands::Package { commands } => match &commands {
             Package::Add {
                 name,
                 package_manager,
                 optional,
-            } => commands::package::add(name, package_manager, optional),
+            } => commands::package::add(name, package_manager, *optional),
             Package::Remove {
                 name,
                 package_manager,
                 optional,
-            } => commands::package::remove(name, package_manager, optional),
+            } => commands::package::remove(name, package_manager, *optional),
             Package::Install { managers, optional } => {
-                commands::package::install(managers, optional)
+                commands::package::install(managers, *optional)
             }
 
             Package::Manager { commands } => match &commands {

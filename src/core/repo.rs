@@ -1,6 +1,6 @@
 use crate::core::config::Config;
 use crate::core::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 pub struct Repo {
     root: PathBuf,
@@ -9,7 +9,7 @@ pub struct Repo {
 }
 
 impl Repo {
-    pub fn new_at(path: PathBuf, force: &bool) -> Result<Self, Error> {
+    pub fn new_at(path: PathBuf, force: bool) -> Result<Self, Error> {
         let config_path = path.join("dotfm.toml");
         if config_path.exists() {
             return Err(Error::Msg("Already in a dotfm repository.".to_string()));
@@ -61,11 +61,11 @@ impl Repo {
         })
     }
 
-    pub fn root(&self) -> &PathBuf {
+    pub fn root(&self) -> &Path {
         &self.root
     }
 
-    pub fn config_path(&self) -> &PathBuf {
+    pub fn config_path(&self) -> &Path {
         &self.config_path
     }
 }

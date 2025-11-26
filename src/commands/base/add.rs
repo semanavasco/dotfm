@@ -3,7 +3,7 @@ use crate::core::repo::Repo;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {
+pub fn add(path: &str, name: Option<&str>) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
@@ -14,7 +14,7 @@ pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {
     }
 
     let file_name = match name {
-        Some(n) => n.clone(),
+        Some(n) => n.to_string(),
         None => match file_path.file_name() {
             Some(n) => n.to_string_lossy().to_string(),
             None => {
@@ -31,7 +31,9 @@ pub fn add(path: &String, name: &Option<String>) -> Result<(), Error> {
         ));
     }
 
-    repo.config.files.insert(file_name.clone(), path.clone());
+    repo.config
+        .files
+        .insert(file_name.clone(), path.to_string());
 
     std::fs::rename(&file_path, repo.root().join(&file_name))
         .map_err(|e| Error::Msg(format!("Failed to move file {} to repository: {}", path, e)))?;
