@@ -48,6 +48,9 @@ pub enum Commands {
         force: bool,
     },
 
+    /// Check the status of your dotfiles
+    Check,
+
     /// Manage package managers and dependencies
     Package {
         #[clap(subcommand)]

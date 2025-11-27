@@ -11,6 +11,7 @@ fn main() {
         Commands::Remove { name } => commands::base::remove(name),
         Commands::Load { force } => commands::base::load(*force),
         Commands::Restore { force } => commands::base::restore(*force),
+        Commands::Check => commands::base::check(),
 
         Commands::Package { commands } => match &commands {
             Package::Add {
