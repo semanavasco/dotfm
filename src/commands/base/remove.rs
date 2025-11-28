@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 
 use crate::core::error::Error;
+use crate::core::paths;
 use crate::core::repo::Repo;
 
 pub fn remove(name: &str) -> Result<(), Error> {
@@ -14,7 +15,7 @@ pub fn remove(name: &str) -> Result<(), Error> {
     let original_path = PathBuf::from(shellexpand::full(path_str)?.to_string());
 
     if original_path.exists() {
-        std::fs::remove_file(&original_path).map_err(|e| {
+        paths::remove_recursive(&original_path).map_err(|e| {
             Error::Msg(format!(
                 "Failed to remove managed file {}: {}",
                 original_path.display(),
