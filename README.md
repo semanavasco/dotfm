@@ -161,6 +161,35 @@ Include optional packages:
 dotfm package install --optional
 ```
 
-## Planned Features
+## Planned (or thinking about it)
 
-- **Remote Repository Loading**: Load your dotfiles from a remote repository to avoid symlink hell or config duplication
+- **Copy mode**: Replace symlinks with file copies as the default deployment method
+  - Add `--link` flag to `load` for symlink behavior (backward compatibility)
+  - Would allow for templating, diffs, and safer workflow
+
+- **`dotfm pull`**: Update repo from deployed files
+  - `dotfm pull` - Pull all managed files
+  - `dotfm pull <name>` - Pull specific file
+
+- **`dotfm diff <name>`**: Compare deployed file vs repo version
+  - `--tool <TOOL>` flag for external diff tools
+
+- **`dotfm list`**: Lists all managed files, packages, etc
+
+- **Template variables**: Variable substitution in config files
+  - Built-in: `{{ USER }}`, `{{ HOSTNAME }}`, `{{ OS }}`, ...
+  - Custom variables in `dotfm.toml`
+  - `dotfm load --render` to process templates
+
+- **Machine profiles**: Context-specific configurations
+  - `[profiles.laptop]`, `[profiles.work]`, etc.
+  - Override variables, files, and packages per profile
+  - `dotfm load --profile laptop`
+
+- **Hooks**: Run scripts at lifecycle events
+  - `pre_load`, `post_load`, `pre_pull`, `post_pull`
+  - Per-file or global hooks
+
+- **Remote repository support**: Bootstrap from a git URL
+  - ?`dotfm clone <URL>` - Clone and setup dotfiles repo
+  - ?`dotfm push` - Commit and push changes
