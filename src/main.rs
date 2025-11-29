@@ -7,9 +7,9 @@ fn main() {
 
     let result = match &cli.commands {
         Commands::Init { force } => commands::base::init(*force),
-        Commands::Remove { name, no_restore } => commands::base::remove(name),
         Commands::Sync { force, link } => commands::base::sync(*force),
         Commands::Add { path, name, link } => commands::base::add(path, name.as_deref(), *link),
+        Commands::Remove { name, no_restore } => commands::base::remove(name, *no_restore),
         Commands::Check => commands::base::check(),
 
         Commands::Package { commands } => match &commands {
