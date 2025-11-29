@@ -42,15 +42,22 @@ pub enum Commands {
         no_restore: bool,
     },
 
-    /// Sync repository with local dotfiles
-    Sync {
+    /// Push repository to local dotfiles
+    Push {
         /// Force overwrite of existing files
         #[arg(short, long, default_value_t = false)]
         force: bool,
 
-        /// Sync file or directories as symlinks
+        /// Push file or directories as symlinks
         #[arg(short, long, default_value_t = false)]
         link: bool,
+    },
+
+    /// Pull local dotfiles to repository
+    Pull {
+        /// Optional list of dotfiles to pull
+        #[arg(value_name = "NAMES")]
+        names: Option<Vec<String>>,
     },
 
     /// Check the status of your dotfiles
