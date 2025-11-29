@@ -1,9 +1,10 @@
 use crate::core::error::Error;
+use crate::core::paths;
 use crate::core::repo::Repo;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn add(path: &str, name: Option<&str>) -> Result<(), Error> {
+pub fn add(path: &str, name: Option<&str>, link: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
@@ -35,17 +36,22 @@ pub fn add(path: &str, name: Option<&str>) -> Result<(), Error> {
         .files
         .insert(file_name.clone(), path.to_string());
 
-    std::fs::rename(&file_path, repo.root().join(&file_name))
-        .map_err(|e| Error::Msg(format!("Failed to move file {} to repository: {}", path, e)))?;
+    if link {
+        std::fs::rename(&file_path, repo.root().join(&file_name)).map_err(|e| {
+            Error::Msg(format!("Failed to move file {} to repository: {}", path, e))
+        })?;
 
-    fs::symlink(repo.root().join(&file_name), &file_path).map_err(|e| {
-        Error::Msg(format!(
-            "Failed to create symlink from {} to {}: {}",
-            path,
-            repo.root().join(&file_name).display(),
-            e
-        ))
-    })?;
+        fs::symlink(repo.root().join(&file_name), &file_path).map_err(|e| {
+            Error::Msg(format!(
+                "Failed to create symlink from {} to {}: {}",
+                path,
+                repo.root().join(&file_name).display(),
+                e
+            ))
+        })?;
+    } else {
+        paths::copy_recursive(&file_path, repo.root().join(&file_name).as_path())?;
+    }
 
     repo.config.save(repo.config_path())?;
     println!("Added {} to {} repository.", path, repo.config.name);
