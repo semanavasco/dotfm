@@ -5,10 +5,10 @@ A simple dotfiles manager written in Rust.
 ## Features
 
 - **Initialize Repository**: Create a new dotfm repository to manage your dotfiles
-- **Add Files**: Track dotfiles by moving them to the repository and creating symlinks
+- **Add Files**: Track dotfiles by copying them to the repository (or moving and symlinking)
 - **Remove Files**: Stop managing files and restore them to their original locations
-- **Load Files**: Deploy your dotfiles by creating symlinks from the repository to their target locations
-- **Restore Files**: Copy dotfiles to their target locations (without symlinks)
+- **Push Files**: Deploy your dotfiles from the repository to their target locations (copy or symlink)
+- **Pull Files**: Update your repository with the latest changes from your local dotfiles
 - **Package Management**: Declare system packages with install commands and dependency tracking
 - **TOML Configuration**: Configuration file for easy editing and version control
 
@@ -36,8 +36,16 @@ dotfm init --force
 
 ### Add a file to the repository
 
+Add a file (copies it to the repository):
+
 ```bash
 dotfm add ~/.bashrc
+```
+
+Add a file and create a symlink (moves it to the repository):
+
+```bash
+dotfm add ~/.bashrc --link
 ```
 
 Specify a custom name for the managed file:
@@ -52,33 +60,47 @@ dotfm add ~/.config/nvim/init.vim --name nvim-init
 dotfm remove bashrc
 ```
 
-This will restore the file to its original location and stop managing it.
+This will restore the file to its original location (overwriting local changes with the repo version) and stop managing it.
 
-### Load dotfiles
+To stop managing a file without restoring (keeping your local version):
 
 ```bash
-dotfm load
+dotfm remove bashrc --no-restore
+```
+
+### Push dotfiles
+
+Deploy files from the repository to your system (copies by default):
+
+```bash
+dotfm push
 ```
 
 Use `--force` to overwrite existing files:
 
 ```bash
-dotfm load --force
+dotfm push --force
 ```
 
-### Restore dotfiles
+Use `--link` to use symlinks instead of copying:
 
 ```bash
-dotfm restore
+dotfm push --link
 ```
 
-Use `--force` to overwrite existing files:
+### Pull dotfiles
+
+Update the repository with changes from your local files:
 
 ```bash
-dotfm restore --force
+dotfm pull
 ```
 
-Restore is similar to load but it copies the files to their positions instead of creating symlinks.
+Pull specific files only:
+
+```bash
+dotfm pull bashrc vimrc
+```
 
 ## Configuration
 
@@ -163,14 +185,6 @@ dotfm package install --optional
 
 ## Planned (or thinking about it)
 
-- **Copy mode**: Replace symlinks with file copies as the default deployment method
-  - Add `--link` flag to `load` for symlink behavior (backward compatibility)
-  - Would allow for templating, diffs, and safer workflow
-
-- **`dotfm pull`**: Update repo from deployed files
-  - `dotfm pull` - Pull all managed files
-  - `dotfm pull <name>` - Pull specific file
-
 - **`dotfm diff <name>`**: Compare deployed file vs repo version
   - `--tool <TOOL>` flag for external diff tools
 
@@ -179,17 +193,17 @@ dotfm package install --optional
 - **Template variables**: Variable substitution in config files
   - Built-in: `{{ USER }}`, `{{ HOSTNAME }}`, `{{ OS }}`, ...
   - Custom variables in `dotfm.toml`
-  - `dotfm load --render` to process templates
+  - `dotfm push --render` to process templates
 
 - **Machine profiles**: Context-specific configurations
   - `[profiles.laptop]`, `[profiles.work]`, etc.
   - Override variables, files, and packages per profile
-  - `dotfm load --profile laptop`
+  - `dotfm push --profile laptop`
 
 - **Hooks**: Run scripts at lifecycle events
-  - `pre_load`, `post_load`, `pre_pull`, `post_pull`
+  - `pre_push`, `post_push`, `pre_pull`, `post_pull`
   - Per-file or global hooks
 
 - **Remote repository support**: Bootstrap from a git URL
   - ?`dotfm clone <URL>` - Clone and setup dotfiles repo
-  - ?`dotfm push` - Commit and push changes
+  - ?`dotfm git-push` - Commit and push changes

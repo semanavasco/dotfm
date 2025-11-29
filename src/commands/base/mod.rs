@@ -1,13 +1,13 @@
 mod add;
 mod check;
 mod init;
-mod load;
+mod pull;
+mod push;
 mod remove;
-mod restore;
 
 pub use add::add;
 pub use check::check;
 pub use init::init;
-pub use load::load;
+pub use pull::pull;
+pub use push::push;
 pub use remove::remove;
-pub use restore::restore;
