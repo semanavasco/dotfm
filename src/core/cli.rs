@@ -25,6 +25,10 @@ pub enum Commands {
         /// The name to use for the managed file or directory
         #[arg(short, long)]
         name: Option<String>,
+
+        /// Add file or directory to repository and create symlink to original location
+        #[arg(short, long, default_value_t = false)]
+        link: bool,
     },
 
     /// Remove a file or directory from being managed
@@ -32,20 +36,21 @@ pub enum Commands {
         /// The file or directory to remove
         #[arg(value_name = "NAME")]
         name: String,
+
+        /// Don't restore file or directory to original location
+        #[arg(short, long, default_value_t = false)]
+        no_restore: bool,
     },
 
-    /// Load the managed files into their respective locations
-    Load {
+    /// Sync repository with local dotfiles
+    Sync {
         /// Force overwrite of existing files
         #[arg(short, long, default_value_t = false)]
         force: bool,
-    },
 
-    /// Restore all managed files to their original locations
-    Restore {
-        /// Force overwrite of existing files
+        /// Sync file or directories as symlinks
         #[arg(short, long, default_value_t = false)]
-        force: bool,
+        link: bool,
     },
 
     /// Check the status of your dotfiles

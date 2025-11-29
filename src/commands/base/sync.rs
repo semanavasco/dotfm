@@ -3,7 +3,7 @@ use crate::core::repo::Repo;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn load(force: bool) -> Result<(), Error> {
+pub fn sync(force: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let repo = Repo::load_at(current_dir)?;
 
@@ -34,7 +34,7 @@ pub fn load(force: bool) -> Result<(), Error> {
                 e
             ))
         })?;
-        println!("Loaded {} to {}", name, path.display());
+        println!("Synced {} to {}", name, path.display());
     }
     Ok(())
 }
