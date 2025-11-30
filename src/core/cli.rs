@@ -60,9 +60,6 @@ pub enum Commands {
         names: Option<Vec<String>>,
     },
 
-    /// Check the status of your dotfiles
-    Check,
-
     /// Manage package managers and dependencies
     Package {
         #[clap(subcommand)]
