@@ -8,7 +8,7 @@ pub fn remove(name: &str, no_restore: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
-    let Some(path_str) = repo.config.files.get(name) else {
+    let Some(path_str) = repo.config.files.as_ref().and_then(|f| f.get(name)) else {
         return Err(Error::Msg("No managed file with this name.".to_string()));
     };
 
@@ -60,7 +60,9 @@ pub fn remove(name: &str, no_restore: bool) -> Result<(), Error> {
         ))
     })?;
 
-    repo.config.files.remove(name);
+    if let Some(files) = repo.config.files.as_mut() {
+        files.remove(name);
+    }
     repo.config.save(repo.config_path())?;
     println!("Removed {} from {} repository.", name, repo.config.name);
     Ok(())

@@ -6,8 +6,8 @@ use std::path::Path;
 pub struct Config {
     pub name: String,
     pub author: String,
-    pub files: HashMap<String, String>,
-    pub packages: HashMap<String, PackageManager>,
+    pub files: Option<HashMap<String, String>>,
+    pub packages: Option<HashMap<String, PackageManager>>,
 }
 
 impl Config {
@@ -15,8 +15,8 @@ impl Config {
         Config {
             name,
             author,
-            files: HashMap::new(),
-            packages: HashMap::new(),
+            files: None,
+            packages: None,
         }
     }
 

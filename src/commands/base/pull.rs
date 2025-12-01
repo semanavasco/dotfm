@@ -6,12 +6,20 @@ use std::path::PathBuf;
 pub fn pull(names: &Option<Vec<String>>) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let repo = Repo::load_at(current_dir)?;
+    let repo_files = match &repo.config.files {
+        Some(files) => files,
+        None => {
+            return Err(Error::Msg(
+                "No files registered in this repository.".to_string(),
+            ));
+        }
+    };
 
     let files_to_pull: Vec<(String, String)> = match names {
         Some(names_list) => {
             let mut files = Vec::new();
             for name in names_list {
-                if let Some(path) = repo.config.files.get(name) {
+                if let Some(path) = repo_files.get(name) {
                     files.push((name.clone(), path.clone()));
                 } else {
                     eprintln!("File '{}' is not managed by dotfm. Skipping it.", name);
@@ -19,9 +27,7 @@ pub fn pull(names: &Option<Vec<String>>) -> Result<(), Error> {
             }
             files
         }
-        None => repo
-            .config
-            .files
+        None => repo_files
             .iter()
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect(),

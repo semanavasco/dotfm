@@ -7,8 +7,16 @@ use std::path::PathBuf;
 pub fn push(force: bool, link: bool) -> Result<(), Error> {
     let current_dir = std::env::current_dir()?;
     let repo = Repo::load_at(current_dir)?;
+    let repo_files = match &repo.config.files {
+        Some(files) => files,
+        None => {
+            return Err(Error::Msg(
+                "No files registered in this repository.".to_string(),
+            ));
+        }
+    };
 
-    for (name, path_str) in &repo.config.files {
+    for (name, path_str) in repo_files {
         let path = PathBuf::from(shellexpand::full(path_str)?.to_string());
 
         if path.exists() {

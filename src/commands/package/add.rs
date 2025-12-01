@@ -4,11 +4,16 @@ pub fn add(name: &str, package_manager: &str, optional: bool) -> Result<(), Erro
     let current_dir = std::env::current_dir()?;
     let mut repo = Repo::load_at(current_dir)?;
 
-    let Some(package_manager_ref) = repo.config.packages.get_mut(package_manager) else {
-        return Err(Error::Msg(format!(
-            "Package manager named \"{package_manager}\" does not exist in repository. Try adding it first."
-        )));
-    };
+    let package_manager_ref = repo
+        .config
+        .packages
+        .as_mut()
+        .and_then(|p| p.get_mut(package_manager))
+        .ok_or_else(|| {
+            Error::Msg(format!(
+                "Package manager named \"{package_manager}\" does not exist in repository. Try adding it first."
+            ))
+        })?;
 
     if package_manager_ref.dependencies.contains(&name.to_string()) {
         return Err(Error::Msg(

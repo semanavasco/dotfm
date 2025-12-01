@@ -1,6 +1,7 @@
 use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
+use std::collections::HashMap;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
@@ -26,7 +27,12 @@ pub fn add(path: &str, name: Option<&str>, link: bool) -> Result<(), Error> {
         },
     };
 
-    if repo.config.files.contains_key(&file_name) {
+    if repo
+        .config
+        .files
+        .as_ref()
+        .is_some_and(|f| f.contains_key(&file_name))
+    {
         return Err(Error::Msg(
             "A file with this name is already managed.".to_string(),
         ));
@@ -34,6 +40,7 @@ pub fn add(path: &str, name: Option<&str>, link: bool) -> Result<(), Error> {
 
     repo.config
         .files
+        .get_or_insert_with(HashMap::new)
         .insert(file_name.clone(), path.to_string());
 
     if link {

@@ -4,19 +4,21 @@ pub fn install(managers: &Option<Vec<String>>, optional: bool) -> Result<(), Err
     let current_dir = std::env::current_dir()?;
     let repo = Repo::load_at(current_dir)?;
 
+    let packages = repo
+        .config
+        .packages
+        .as_ref()
+        .ok_or_else(|| Error::Msg("No packages configured in this repository.".to_string()))?;
+
     let managers: Vec<(&String, &PackageManager)> = match managers {
-        Some(managers) => repo
-            .config
-            .packages
+        Some(managers) => packages
             .iter()
             .filter(|p| {
                 managers.contains(p.0)
                     && (!p.1.dependencies.is_empty() || (optional && !p.1.optional.is_empty()))
             })
             .collect(),
-        None => repo
-            .config
-            .packages
+        None => packages
             .iter()
             .filter(|p| !p.1.dependencies.is_empty() || (optional && !p.1.optional.is_empty()))
             .collect(),
