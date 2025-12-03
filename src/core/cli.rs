@@ -60,6 +60,13 @@ pub enum Commands {
         names: Option<Vec<String>>,
     },
 
+    /// Compare repository against local dotfiles
+    Diff {
+        /// The dotfile to diff
+        #[arg(value_name = "NAME")]
+        name: String,
+    },
+
     /// Manage package managers and dependencies
     Package {
         #[clap(subcommand)]

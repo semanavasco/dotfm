@@ -11,6 +11,7 @@ fn main() {
         Commands::Remove { name, no_restore } => commands::base::remove(name, *no_restore),
         Commands::Push { force, link } => commands::base::push(*force, *link),
         Commands::Pull { names } => commands::base::pull(names),
+        Commands::Diff { name } => commands::base::diff(name),
 
         Commands::Package { commands } => match &commands {
             Package::Add {

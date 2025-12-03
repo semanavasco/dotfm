@@ -9,6 +9,7 @@ A simple dotfiles manager written in Rust.
 - **Remove Files**: Stop managing files and restore them to their original locations
 - **Push Files**: Deploy your dotfiles from the repository to their target locations (copy or symlink)
 - **Pull Files**: Update your repository with the latest changes from your local dotfiles
+- **Diff Files**: Check that your configuration matches your deployed dotfiles
 - **Package Management**: Declare system packages with install commands and dependency tracking
 - **TOML Configuration**: Configuration file for easy editing and version control
 
@@ -100,6 +101,14 @@ Pull specific files only:
 
 ```bash
 dotfm pull bashrc vimrc
+```
+
+### Diff dotfiles
+
+Diff your repository against local dotfiles:
+
+```bash
+dotfm diff bashrc
 ```
 
 ## Configuration
