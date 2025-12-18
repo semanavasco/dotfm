@@ -1,12 +1,13 @@
+use crate::GlobalConfig;
 use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn push(force: bool, link: bool) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let repo = Repo::load_at(current_dir)?;
+pub fn push(repository: Option<PathBuf>, force: bool, link: bool) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let repo = Repo::load_at(repo_path)?;
     let repo_files = match &repo.config.files {
         Some(files) => files,
         None => {

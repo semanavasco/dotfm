@@ -1,11 +1,12 @@
+use crate::GlobalConfig;
 use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
 use std::path::PathBuf;
 
-pub fn pull(names: &Option<Vec<String>>) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let repo = Repo::load_at(current_dir)?;
+pub fn pull(repository: Option<PathBuf>, names: &Option<Vec<String>>) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let repo = Repo::load_at(repo_path)?;
     let repo_files = match &repo.config.files {
         Some(files) => files,
         None => {

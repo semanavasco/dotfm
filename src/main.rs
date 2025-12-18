@@ -7,36 +7,58 @@ fn main() {
 
     let result = match &cli.commands {
         Commands::Init { force } => commands::base::init(*force),
-        Commands::Add { path, name, link } => commands::base::add(path, name.as_deref(), *link),
-        Commands::Remove { name, no_restore } => commands::base::remove(name, *no_restore),
-        Commands::Push { force, link } => commands::base::push(*force, *link),
-        Commands::Pull { names } => commands::base::pull(names),
-        Commands::Diff { name } => commands::base::diff(name),
+        Commands::Add {
+            path,
+            name,
+            link,
+            repository,
+        } => commands::base::add(repository.clone(), path, name.as_deref(), *link),
+        Commands::Remove {
+            name,
+            no_restore,
+            repository,
+        } => commands::base::remove(repository.clone(), name, *no_restore),
+        Commands::Push {
+            force,
+            link,
+            repository,
+        } => commands::base::push(repository.clone(), *force, *link),
+        Commands::Pull { names, repository } => commands::base::pull(repository.clone(), names),
+        Commands::Diff { name, repository } => commands::base::diff(repository.clone(), name),
         Commands::List {
             no_files,
             no_packages,
-        } => commands::base::list(*no_files, *no_packages),
+            repository,
+        } => commands::base::list(repository.clone(), *no_files, *no_packages),
 
         Commands::Package { commands } => match &commands {
             Package::Add {
                 name,
                 package_manager,
                 optional,
-            } => commands::package::add(name, package_manager, *optional),
+                repository,
+            } => commands::package::add(repository.clone(), name, package_manager, *optional),
             Package::Remove {
                 name,
                 package_manager,
                 optional,
-            } => commands::package::remove(name, package_manager, *optional),
-            Package::Install { managers, optional } => {
-                commands::package::install(managers, *optional)
-            }
+                repository,
+            } => commands::package::remove(repository.clone(), name, package_manager, *optional),
+            Package::Install {
+                managers,
+                optional,
+                repository,
+            } => commands::package::install(repository.clone(), managers, *optional),
 
             Package::Manager { commands } => match &commands {
-                PackageManager::Add { name, install_cmd } => {
-                    commands::package::add_manager(name, install_cmd)
+                PackageManager::Add {
+                    name,
+                    install_cmd,
+                    repository,
+                } => commands::package::add_manager(repository.clone(), name, install_cmd),
+                PackageManager::Remove { name, repository } => {
+                    commands::package::remove_manager(repository.clone(), name)
                 }
-                PackageManager::Remove { name } => commands::package::remove_manager(name),
             },
         },
     };

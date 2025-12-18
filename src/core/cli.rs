@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::{Parser, Subcommand, ValueHint};
 
 #[derive(Parser, Debug)]
@@ -29,6 +31,10 @@ pub enum Commands {
         /// Add file or directory to repository and create symlink to original location
         #[arg(short, long, default_value_t = false)]
         link: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Remove a file or directory from being managed
@@ -40,6 +46,10 @@ pub enum Commands {
         /// Don't restore file or directory to original location
         #[arg(short, long, default_value_t = false)]
         no_restore: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Push repository to local dotfiles
@@ -51,6 +61,10 @@ pub enum Commands {
         /// Push file or directories as symlinks
         #[arg(short, long, default_value_t = false)]
         link: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Pull local dotfiles to repository
@@ -58,6 +72,10 @@ pub enum Commands {
         /// Optional list of dotfiles to pull
         #[arg(value_name = "NAMES")]
         names: Option<Vec<String>>,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Compare repository against local dotfiles
@@ -65,6 +83,10 @@ pub enum Commands {
         /// The dotfile to diff
         #[arg(value_name = "NAME")]
         name: String,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Manage package managers and dependencies
@@ -82,6 +104,10 @@ pub enum Commands {
         /// Don't list packages
         #[arg(short = 'p', long, default_value_t = false)]
         no_packages: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 }
 
@@ -98,6 +124,10 @@ pub enum Package {
         /// Set this package as optional (a description is recommended if package is optional)
         #[arg(short, long, default_value_t = false)]
         optional: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Remove a package
@@ -111,6 +141,10 @@ pub enum Package {
         /// Set this package as optional (a description is recommended if package is optional)
         #[arg(short, long, default_value_t = false)]
         optional: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Install packages
@@ -121,6 +155,10 @@ pub enum Package {
         /// Install optional packages as well
         #[arg(short, long, default_value_t = false)]
         optional: bool,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Manage package managers
@@ -139,11 +177,19 @@ pub enum PackageManager {
 
         /// The install command prefix (ex: sudo pacman -S)
         install_cmd: String,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 
     /// Remove a package manager
     Remove {
         /// The name of the package manager to remove
         name: String,
+
+        /// Use repository at provided directory path
+        #[arg(short, long, value_name = "PATH")]
+        repository: Option<PathBuf>,
     },
 }

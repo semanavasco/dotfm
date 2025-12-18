@@ -1,9 +1,11 @@
+use crate::GlobalConfig;
 use crate::core::{error::Error, repo::Repo};
 use colored::Colorize;
+use std::path::PathBuf;
 
-pub fn list(no_files: bool, no_packages: bool) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let repo = Repo::load_at(current_dir)?;
+pub fn list(repository: Option<PathBuf>, no_files: bool, no_packages: bool) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let repo = Repo::load_at(repo_path)?;
 
     if no_files && no_packages {
         return Err(Error::Msg("You must display something.".to_string()));

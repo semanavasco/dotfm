@@ -1,3 +1,4 @@
+use crate::GlobalConfig;
 use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
@@ -5,9 +6,14 @@ use std::collections::HashMap;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn add(path: &str, name: Option<&str>, link: bool) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let mut repo = Repo::load_at(current_dir)?;
+pub fn add(
+    repository: Option<PathBuf>,
+    path: &str,
+    name: Option<&str>,
+    link: bool,
+) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let mut repo = Repo::load_at(repo_path)?;
 
     let file_path = PathBuf::from(shellexpand::full(path)?.to_string());
 

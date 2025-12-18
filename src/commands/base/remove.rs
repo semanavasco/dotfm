@@ -1,12 +1,13 @@
 use std::path::PathBuf;
 
+use crate::GlobalConfig;
 use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
 
-pub fn remove(name: &str, no_restore: bool) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let mut repo = Repo::load_at(current_dir)?;
+pub fn remove(repository: Option<PathBuf>, name: &str, no_restore: bool) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let mut repo = Repo::load_at(repo_path)?;
 
     let Some(path_str) = repo.config.files.as_ref().and_then(|f| f.get(name)) else {
         return Err(Error::Msg("No managed file with this name.".to_string()));

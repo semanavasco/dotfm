@@ -1,8 +1,15 @@
+use std::path::PathBuf;
+
+use crate::GlobalConfig;
 use crate::core::{config::PackageManager, error::Error, repo::Repo};
 
-pub fn install(managers: &Option<Vec<String>>, optional: bool) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let repo = Repo::load_at(current_dir)?;
+pub fn install(
+    repository: Option<PathBuf>,
+    managers: &Option<Vec<String>>,
+    optional: bool,
+) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let repo = Repo::load_at(repo_path)?;
 
     let packages = repo
         .config

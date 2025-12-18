@@ -3,11 +3,12 @@ use std::collections::HashSet;
 use std::path::PathBuf;
 use walkdir::WalkDir;
 
+use crate::GlobalConfig;
 use crate::core::{diffs, error::Error, repo::Repo};
 
-pub fn diff(name: &str) -> Result<(), Error> {
-    let current_dir = std::env::current_dir()?;
-    let repo = Repo::load_at(current_dir)?;
+pub fn diff(repository: Option<PathBuf>, name: &str) -> Result<(), Error> {
+    let repo_path = GlobalConfig::get_repository_path(repository)?;
+    let repo = Repo::load_at(repo_path)?;
 
     let Some(path_str) = repo.config.files.as_ref().and_then(|f| f.get(name)) else {
         return Err(Error::Msg(format!("'{}' is not a managed file.", name)));

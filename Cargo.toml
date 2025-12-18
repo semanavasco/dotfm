@@ -1,11 +1,12 @@
 [package]
 name = "dotfm"
-version = "0.7.0"
+version = "0.8.0"
 edition = "2024"
 
 [dependencies]
 clap = { version = "4.5.47", features = ["derive"] }
 colored = "3.0.0"
+dirs = "6.0.0"
 serde = { version = "1.0.226", features = ["derive"] }
 shellexpand = "3.1.1"
 similar = "2.7.0"
