@@ -194,9 +194,6 @@ dotfm package install --optional
 
 ## Planned (or thinking about it)
 
-- **`dotfm diff <name>`**: Compare deployed file vs repo version
-  - `--tool <TOOL>` flag for external diff tools
-
 - **`dotfm list`**: Lists all managed files, packages, etc
 
 - **Template variables**: Variable substitution in config files
