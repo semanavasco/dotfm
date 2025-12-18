@@ -5,8 +5,8 @@ use crate::core::{error::Error, repo::Repo};
 
 pub fn add(
     repository: Option<PathBuf>,
-    name: &str,
-    package_manager: &str,
+    name: String,
+    package_manager: String,
     optional: bool,
 ) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
@@ -16,7 +16,7 @@ pub fn add(
         .config
         .packages
         .as_mut()
-        .and_then(|p| p.get_mut(package_manager))
+        .and_then(|p| p.get_mut(&package_manager))
         .ok_or_else(|| {
             Error::Msg(format!(
                 "Package manager named \"{package_manager}\" does not exist in repository. Try adding it first."

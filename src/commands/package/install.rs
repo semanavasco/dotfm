@@ -5,7 +5,7 @@ use crate::core::{config::PackageManager, error::Error, repo::Repo};
 
 pub fn install(
     repository: Option<PathBuf>,
-    managers: &Option<Vec<String>>,
+    managers: Option<Vec<String>>,
     optional: bool,
 ) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;

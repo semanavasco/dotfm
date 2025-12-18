@@ -8,14 +8,14 @@ use std::path::PathBuf;
 
 pub fn add(
     repository: Option<PathBuf>,
-    path: &str,
-    name: Option<&str>,
+    path: String,
+    name: Option<String>,
     link: bool,
 ) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
     let mut repo = Repo::load_at(repo_path)?;
 
-    let file_path = PathBuf::from(shellexpand::full(path)?.to_string());
+    let file_path = PathBuf::from(shellexpand::full(&path)?.to_string());
 
     if !file_path.exists() {
         return Err(Error::Msg("Specified path does not exist.".to_string()));

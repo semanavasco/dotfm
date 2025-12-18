@@ -3,7 +3,7 @@ use std::path::PathBuf;
 use crate::GlobalConfig;
 use crate::core::{config::PackageManager, error::Error, repo::Repo};
 
-pub fn add(repository: Option<PathBuf>, name: &str, install_cmd: &str) -> Result<(), Error> {
+pub fn add(repository: Option<PathBuf>, name: String, install_cmd: String) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
     let mut repo = Repo::load_at(repo_path)?;
 
@@ -11,7 +11,7 @@ pub fn add(repository: Option<PathBuf>, name: &str, install_cmd: &str) -> Result
         .config
         .packages
         .as_ref()
-        .is_some_and(|p| p.contains_key(name))
+        .is_some_and(|p| p.contains_key(&name))
     {
         return Err(Error::Msg(
             "A package manager with this name is already managed.".to_string(),

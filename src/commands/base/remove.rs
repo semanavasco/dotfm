@@ -5,16 +5,16 @@ use crate::core::error::Error;
 use crate::core::paths;
 use crate::core::repo::Repo;
 
-pub fn remove(repository: Option<PathBuf>, name: &str, no_restore: bool) -> Result<(), Error> {
+pub fn remove(repository: Option<PathBuf>, name: String, no_restore: bool) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
     let mut repo = Repo::load_at(repo_path)?;
 
-    let Some(path_str) = repo.config.files.as_ref().and_then(|f| f.get(name)) else {
+    let Some(path_str) = repo.config.files.as_ref().and_then(|f| f.get(&name)) else {
         return Err(Error::Msg("No managed file with this name.".to_string()));
     };
 
     let original_path = PathBuf::from(shellexpand::full(path_str)?.to_string());
-    let repo_path = repo.root().join(name);
+    let repo_path = repo.root().join(&name);
 
     let is_link_to_repo = if original_path.is_symlink() {
         match (
@@ -62,7 +62,7 @@ pub fn remove(repository: Option<PathBuf>, name: &str, no_restore: bool) -> Resu
     })?;
 
     if let Some(files) = repo.config.files.as_mut() {
-        files.remove(name);
+        files.remove(&name);
     }
     repo.config.save(repo.config_path())?;
     println!("Removed {} from {} repository.", name, repo.config.name);

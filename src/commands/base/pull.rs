@@ -4,7 +4,7 @@ use crate::core::paths;
 use crate::core::repo::Repo;
 use std::path::PathBuf;
 
-pub fn pull(repository: Option<PathBuf>, names: &Option<Vec<String>>) -> Result<(), Error> {
+pub fn pull(repository: Option<PathBuf>, names: Option<Vec<String>>) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
     let repo = Repo::load_at(repo_path)?;
     let repo_files = match &repo.config.files {
@@ -20,8 +20,8 @@ pub fn pull(repository: Option<PathBuf>, names: &Option<Vec<String>>) -> Result<
         Some(names_list) => {
             let mut files = Vec::new();
             for name in names_list {
-                if let Some(path) = repo_files.get(name) {
-                    files.push((name.clone(), path.clone()));
+                if let Some(path) = repo_files.get(&name) {
+                    files.push((name, path.clone()));
                 } else {
                     eprintln!("File '{}' is not managed by dotfm. Skipping it.", name);
                 }
