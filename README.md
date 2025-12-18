@@ -192,6 +192,18 @@ Include optional packages:
 dotfm package install --optional
 ```
 
+## Global Configuration
+
+You can set a global repository path so you don't have to be in the repository directory, or use the `--repository` flag for every command.
+
+Create a configuration file at `~/.config/dotfm/config.toml` (on Linux), for example :
+
+```toml
+repository = "~/dotfiles"
+```
+
+If this file exists, `dotfm` will use that path as the default repository. If neither the `--repository` flag is provided nor the global configuration exists, it defaults to the current working directory.
+
 ## Planned (or thinking about it)
 
 - **Template variables**: Variable substitution in config files
