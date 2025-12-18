@@ -17,7 +17,7 @@ impl GlobalConfig {
         }
 
         if let Some(config_dir) = dirs::config_dir() {
-            let config_path = config_dir.join("dotfm").join("dotfm.toml");
+            let config_path = config_dir.join("dotfm").join("config.toml");
 
             if config_path.exists() {
                 let content = std::fs::read_to_string(config_path)?;
