@@ -72,6 +72,17 @@ pub enum Commands {
         #[clap(subcommand)]
         commands: Package,
     },
+
+    /// List managed files and/or packages
+    List {
+        /// Don't list files
+        #[arg(short = 'f', long, default_value_t = false)]
+        no_files: bool,
+
+        /// Don't list packages
+        #[arg(short = 'p', long, default_value_t = false)]
+        no_packages: bool,
+    },
 }
 
 #[derive(Subcommand, Debug)]

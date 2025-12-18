@@ -194,8 +194,6 @@ dotfm package install --optional
 
 ## Planned (or thinking about it)
 
-- **`dotfm list`**: Lists all managed files, packages, etc
-
 - **Template variables**: Variable substitution in config files
   - Built-in: `{{ USER }}`, `{{ HOSTNAME }}`, `{{ OS }}`, ...
   - Custom variables in `dotfm.toml`

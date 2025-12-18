@@ -12,6 +12,10 @@ fn main() {
         Commands::Push { force, link } => commands::base::push(*force, *link),
         Commands::Pull { names } => commands::base::pull(names),
         Commands::Diff { name } => commands::base::diff(name),
+        Commands::List {
+            no_files,
+            no_packages,
+        } => commands::base::list(*no_files, *no_packages),
 
         Commands::Package { commands } => match &commands {
             Package::Add {
