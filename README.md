@@ -89,6 +89,12 @@ Use `--link` to use symlinks instead of copying:
 dotfm push --link
 ```
 
+Push specific files:
+
+```bash
+dotfm push bashrc vimrc
+```
+
 ### Pull dotfiles
 
 Update the repository with changes from your local files:

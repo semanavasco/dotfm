@@ -5,7 +5,12 @@ use crate::core::repo::Repo;
 use std::os::unix::fs;
 use std::path::PathBuf;
 
-pub fn push(repository: Option<PathBuf>, force: bool, link: bool) -> Result<(), Error> {
+pub fn push(
+    repository: Option<PathBuf>,
+    names: Option<Vec<String>>,
+    force: bool,
+    link: bool,
+) -> Result<(), Error> {
     let repo_path = GlobalConfig::get_repository_path(repository)?;
     let repo = Repo::load_at(repo_path)?;
     let repo_files = match &repo.config.files {
@@ -17,8 +22,26 @@ pub fn push(repository: Option<PathBuf>, force: bool, link: bool) -> Result<(), 
         }
     };
 
-    for (name, path_str) in repo_files {
-        let path = PathBuf::from(shellexpand::full(path_str)?.to_string());
+    let files_to_push: Vec<(String, String)> = match names {
+        Some(names_list) => {
+            let mut files = Vec::new();
+            for name in names_list {
+                if let Some(path) = repo_files.get(&name) {
+                    files.push((name, path.clone()));
+                } else {
+                    eprintln!("Dotfile '{}' is not managed by dotfm. Skipping it.", name);
+                }
+            }
+            files
+        }
+        None => repo_files
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect(),
+    };
+
+    for (name, path_str) in files_to_push {
+        let path = PathBuf::from(shellexpand::full(&path_str)?.to_string());
 
         if path.exists() {
             if !force {
@@ -38,7 +61,7 @@ pub fn push(repository: Option<PathBuf>, force: bool, link: bool) -> Result<(), 
         }
 
         if link {
-            fs::symlink(repo.root().join(name), &path).map_err(|e| {
+            fs::symlink(repo.root().join(&name), &path).map_err(|e| {
                 Error::Msg(format!(
                     "Failed to create symlink for {}: {}",
                     path.display(),
@@ -46,16 +69,16 @@ pub fn push(repository: Option<PathBuf>, force: bool, link: bool) -> Result<(), 
                 ))
             })?;
         } else {
-            paths::copy_recursive(repo.root().join(name).as_path(), &path).map_err(|e| {
+            paths::copy_recursive(repo.root().join(&name).as_path(), &path).map_err(|e| {
                 Error::Msg(format!(
                     "Failed to copy file or directory from {} to {} : {}",
-                    repo.root().join(name).display(),
+                    repo.root().join(&name).display(),
                     path.display(),
                     e
                 ))
             })?;
         }
-        println!("Pushed {} to {}", name, path.display());
+        println!("Pushed {} to {}", &name, path.display());
     }
     Ok(())
 }

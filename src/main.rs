@@ -19,10 +19,11 @@ fn main() {
             repository,
         } => commands::base::remove(repository, name, no_restore),
         Commands::Push {
+            names,
             force,
             link,
             repository,
-        } => commands::base::push(repository, force, link),
+        } => commands::base::push(repository, names, force, link),
         Commands::Pull { names, repository } => commands::base::pull(repository, names),
         Commands::Diff { name, repository } => commands::base::diff(repository, name),
         Commands::List {

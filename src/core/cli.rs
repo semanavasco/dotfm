@@ -54,6 +54,10 @@ pub enum Commands {
 
     /// Push repository to local dotfiles
     Push {
+        /// The list of dotfiles to push
+        #[arg(value_name = "NAMES")]
+        names: Option<Vec<String>>,
+
         /// Force overwrite of existing files
         #[arg(short, long, default_value_t = false)]
         force: bool,
